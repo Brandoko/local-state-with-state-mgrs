@@ -1,32 +1,19 @@
-import { createContext, useContext, useRef } from "react";
-import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
+import { atom, Provider, useAtomValue, useSetAtom } from "jotai";
 
 const messagesAtom = atom<string[]>([]);
 const messageCountAtom = atom((get) => get(messagesAtom).length);
 const currentMessageAtom = atom("");
 
-const ChatContext = createContext<ReturnType<typeof createStore> | null>(null);
-
 const useMessages = () =>
-  useAtomValue(messagesAtom, {
-    store: useContext(ChatContext)!,
-  });
+  useAtomValue(messagesAtom);
 const useCurrentMessage = () =>
-  useAtomValue(currentMessageAtom, {
-    store: useContext(ChatContext)!,
-  });
+  useAtomValue(currentMessageAtom);
 const useMessageCount = () =>
-  useAtomValue(messageCountAtom, {
-    store: useContext(ChatContext)!,
-  });
+  useAtomValue(messageCountAtom,);
 const useSetCurrentMessage = () =>
-  useSetAtom(currentMessageAtom, {
-    store: useContext(ChatContext)!,
-  });
+  useSetAtom(currentMessageAtom);
 const useSetMessages = () =>
-  useSetAtom(messagesAtom, {
-    store: useContext(ChatContext)!,
-  });
+  useSetAtom(messagesAtom);
 
 const Chat = () => {
   const currentMessage = useCurrentMessage();
@@ -66,12 +53,11 @@ const Chat = () => {
 };
 
 const ChatContainer = () => {
-  const chatStore = useRef(createStore());
   return (
     <div className="chat">
-      <ChatContext.Provider value={chatStore.current}>
+      <Provider>
         <Chat />
-      </ChatContext.Provider>
+      </Provider>
     </div>
   );
 };
